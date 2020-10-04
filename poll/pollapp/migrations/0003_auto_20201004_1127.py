@@ -13,10 +13,7 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RemoveField(
-            model_name="answer",
-            name="count",
-        ),
+        migrations.RemoveField(model_name="answer", name="count",),
         migrations.AddField(
             model_name="question",
             name="date",

@@ -11,6 +11,7 @@ urlpatterns = [
     path("api-auth/", include("rest_framework.urls", namespace="rest_framework")),
     path("question/", views.QuestionListView.as_view()),
     path("question/<pk>/", views.QuestionView.as_view(), name="question-detail"),
-    path("question/<pk>/answer/", views.AnswerListView.as_view()),
+    path("question/<pk>/answer/", views.QuestionAnswersListView.as_view()),
+    path("answer/", views.AnswerListView.as_view()),
     path("answer/<pk>/", views.AnswerView.as_view(), name="answer-detail"),
 ]

@@ -8,9 +8,9 @@ from .serializers import (
     QuestionSerializer,
     QuestionListSerializer,
     AnswerSerializer,
+    AnswerListSerializer,
 )
 from .models import Question, Answer, Vote
-
 
 class UserViewSet(viewsets.ModelViewSet):
     """
@@ -79,6 +79,15 @@ class QuestionView(APIView):
 
 
 class AnswerListView(APIView):
+    def get(self, request, format=None):
+        answers = Answer.objects.all()
+        serializer = AnswerListSerializer(
+            answers, many=True, context={"request": request}
+        )
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class QuestionAnswersListView(APIView):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     def get_question(self, pk):
@@ -134,9 +143,7 @@ class AnswerView(APIView):
                 serializer.save()
                 return Response(serializer.data)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        return Response(
-            AnswerSerializer(question).data, status=status.HTTP_403_FORBIDDEN
-        )
+        return Response(AnswerSerializer(answer).data, status=status.HTTP_403_FORBIDDEN)
 
     def delete(self, request, pk, format=None):
         answer = self.get_object(pk)
