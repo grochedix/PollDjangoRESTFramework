@@ -57,19 +57,19 @@ class QuestionView(APIView):
 
     def get(self, request, pk, format=None):
         question = self.get_object(pk)
-        serializer = QuestionSerializer(question)
+        serializer = QuestionSerializer(question, context={'request': request})
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def put(self, request, pk, format=None):
         question = self.get_object(pk)
         if request.user == question.author:
-            serializer = QuestionSerializer(question, data=request.data)
+            serializer = QuestionSerializer(question, data=request.data, context={'request': request})
             if serializer.is_valid():
                 serializer.save()
                 return Response(serializer.data)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         return Response(
-            QuestionSerializer(question).data, status=status.HTTP_403_FORBIDDEN
+            QuestionSerializer(question, context={'request': request}).data, status=status.HTTP_403_FORBIDDEN
         )
 
     def delete(self, request, pk, format=None):
