@@ -16,13 +16,19 @@ class AnswerSerializer(serializers.ModelSerializer):
         read_only_fields = ["id"]
 
 
-class QuestionSerializer(serializers.ModelSerializer):
+class QuestionSerializer(serializers.HyperlinkedModelSerializer):
     answers = AnswerSerializer(many=True, read_only=True)
 
     class Meta:
         model = Question
         fields = ["text", "author", "answers"]
         read_only_fields = ["author"]
+
+
+class AnswerListSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = Answer
+        fields = ["id", "text", "question"]
 
 
 class QuestionListSerializer(serializers.HyperlinkedModelSerializer):
