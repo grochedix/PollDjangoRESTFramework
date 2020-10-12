@@ -10,7 +10,7 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
         fields = ["url", "username", "email"]
 
 
-class AnswerSerializer(serializers.ModelSerializer):
+class AnswerSerializer(serializers.HyperlinkedModelSerializer):
     subanswers = RecursiveField(required=False, allow_null=True, many=True)
 
     class Meta:
@@ -18,8 +18,15 @@ class AnswerSerializer(serializers.ModelSerializer):
         fields = ["id", "text", "subanswers"]
         read_only_fields = ["id"]
 
+    def validate(self, data):
+        if bool(data["question"]) == bool(data["subanswers"]):
+            raise serializers.ValidationError(
+                "Either an answer to question, either a subanswer."
+            )
+        return data
 
-class QuestionSerializer(serializers.ModelSerializer):
+
+class QuestionSerializer(serializers.HyperlinkedModelSerializer):
     answers = AnswerSerializer(many=True, read_only=True)
 
     class Meta:
@@ -29,9 +36,18 @@ class QuestionSerializer(serializers.ModelSerializer):
 
 
 class AnswerListSerializer(serializers.HyperlinkedModelSerializer):
+    subanswers = RecursiveField(required=False, allow_null=True, many=True)
+
     class Meta:
         model = Answer
-        fields = ["id", "text", "question", "parent"]
+        fields = ["id", "text", "question", "subanswers"]
+
+    def validate(self, data):
+        if bool(data["question"]) == bool(data["subanswers"]):
+            raise serializers.ValidationError(
+                "Either an answer to question, either a subanswer."
+            )
+        return data
 
 
 class QuestionListSerializer(serializers.HyperlinkedModelSerializer):

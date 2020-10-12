@@ -84,7 +84,7 @@ class QuestionView(APIView):
 
 class AnswerListView(APIView):
     def get(self, request, format=None):
-        answers = Answer.objects.all().order_by("question")
+        answers = Answer.objects.exclude(question=None).order_by("question")
         serializer = AnswerListSerializer(
             answers, many=True, context={"request": request}
         )
