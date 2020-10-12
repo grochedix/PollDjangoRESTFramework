@@ -17,14 +17,21 @@ class Answer(models.Model):
         Question,
         related_name="answers",
         on_delete=models.CASCADE,
-        blank=False,
-        null=False,
+        blank=True,
+        null=True,
     )
     votes = models.ManyToManyField(
         get_user_model(),
         related_name="votes",
         through="vote",
         through_fields=("answer", "user"),
+    )
+    parent = models.ForeignKey(
+        "self",
+        related_name="subanswers",
+        on_delete=models.CASCADE,
+        blank=True,
+        null=True,
     )
 
     def __str__(self):
